@@ -1,0 +1,16 @@
+<svg
+                width="32"
+                height="32"
+                viewBox="0 0 1024 1024"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g id="app_icon" data-name="app icon">
+                  <g id="app_icon-2" data-name="app icon">
+                    <path
+                      id="logomark"
+                      fill="#0091ae"
+                      d="M547.02,368.75v-148.96l-345.02,186.89v397.52l274.99-148.97v148.98l345.01-186.91V219.79l-274.98,148.96ZM272.03,686.62v-238.24l204.96-111.03v238.24l-204.96,111.03ZM751.97,575.59l-204.95,111.03v-238.24l204.95-111.03v238.24Z"
+                    />
+                  </g>
+                </g>
+              </svg>
