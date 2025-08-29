@@ -6,6 +6,7 @@ import fs from "fs";
 import { ArrowLeft } from "lucide-react";
 import path from "path";
 import matter from "gray-matter";
+import NotFound from "@/app/not-found";
 
 import { serialize } from "next-mdx-remote/serialize";
 
@@ -34,18 +35,9 @@ async function getPostBySlug(slug: string) {
 
 const BlogPost = async ({ params }: BlogPostProps) => {
   const post = await getPostBySlug(params.slug);
-
+  
   if (!post) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">Post not found</h1>
-          <Link href="/blog" className="text-cyan-400 hover:text-cyan-300">
-            ← Back to blog
-          </Link>
-        </div>
-      </div>
-    );
+    return <NotFound />;
   }
 
   return (
