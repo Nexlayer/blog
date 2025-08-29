@@ -1,0 +1,10 @@
+application:
+  name: nexlayer-blog
+  pods:
+    - name: blog
+      image: us-east1-docker.pkg.dev/capture-by-auditdeploy/nexlayer-mcp/nexlayer-blog-temp-service-1:e9b45346-1756481637
+      path: "/"
+      servicePorts: [3000]
+      vars:
+        NODE_ENV: "production"
+        NEXT_TELEMETRY_DISABLED: "1"
