@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import BlogMdxContent from "../../../components/BlogMdxContent";
+import BlogContentClient from "../../../components/BlogContentClient";
 import fs from "fs";
 import { ArrowLeft } from "lucide-react";
 import path from "path";
@@ -75,9 +76,9 @@ const BlogPost = async ({ params }: BlogPostProps) => {
             </div>
           </div>
 
-          <div className="prose prose-invert prose-lg max-w-none">
-            <BlogMdxContent source={post.mdxSource} />
-          </div>
+            <div className="prose prose-invert prose-lg max-w-none">
+              <BlogContentClient Content={() => <BlogMdxContent source={post.mdxSource} />} />
+            </div>
         </div>
       </main>
     </div>
