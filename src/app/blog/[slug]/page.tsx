@@ -11,7 +11,7 @@ import NotFound from "@/app/not-found";
 import { serialize } from "next-mdx-remote/serialize";
 
 interface BlogPostProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 async function getPostBySlug(slug: string) {
@@ -34,8 +34,9 @@ async function getPostBySlug(slug: string) {
 }
 
 const BlogPost = async ({ params }: BlogPostProps) => {
-  const post = await getPostBySlug(params.slug);
-  
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
+
   if (!post) {
     return <NotFound />;
   }

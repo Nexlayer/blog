@@ -11,7 +11,7 @@ import NotFound from "@/app/not-found";
 import { serialize } from "next-mdx-remote/serialize";
 
 interface BlogPostProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 async function getPostBySlug(slug: string) {
@@ -34,7 +34,8 @@ async function getPostBySlug(slug: string) {
 }
 
 const BlogPost = async ({ params }: BlogPostProps) => {
-  const post = await getPostBySlug(params.slug);
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
 
   if (!post) {
     return <NotFound />;
@@ -45,7 +46,7 @@ const BlogPost = async ({ params }: BlogPostProps) => {
       <main className="pt-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <Link
-            href="/blog"
+            href="/"
             className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-8"
           >
             <ArrowLeft className="w-4 h-4" />
