@@ -3,7 +3,7 @@ application:
   pods:
     - name: blog
       image: ghcr.io/nexlayer/nexlayer-blog:latest
-      path: "/"
+      path: "/blog"
       servicePorts: [3000]
       vars:
         NODE_ENV: "production"
