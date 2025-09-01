@@ -3,15 +3,7 @@ import createMDX from '@next/mdx'
 const nextConfig: NextConfig = {
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
   output: 'standalone',
-  async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/blog',
-        permanent: true,
-      },
-    ]
-  },
+  basePath: '/blog'
 }
 const withMDX = createMDX({
   extension: /\.mdx?$/,
