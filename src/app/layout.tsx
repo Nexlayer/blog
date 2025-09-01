@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Navbar from "../components/Navbar";
+import StaticNavigation from "../components/StaticNavbar";
 import Footer from "../components/Footer";
 import "./globals.css";
 
@@ -97,7 +97,7 @@ export default function RootLayout({
         <link rel="manifest" href="/blog/site.webmanifest"></link>
       </head>
       <body className={`flex flex-col min-h-screen`}>
-        <Navbar />
+        <StaticNavigation />
         <div className="flex-1">{children}</div>
         <Footer />
       </body>

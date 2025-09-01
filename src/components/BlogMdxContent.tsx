@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import MdxRenderer from "./MdxRenderer";
 import type { MDXRemoteSerializeResult } from "next-mdx-remote";

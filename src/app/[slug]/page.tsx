@@ -1,14 +1,25 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import BlogMdxContent from "../../components/BlogMdxContent";
+import SimpleMdxRenderer from "@/components/SimpleMdxRenderer";
 import fs from "fs";
 import { ArrowLeft } from "lucide-react";
 import path from "path";
 import matter from "gray-matter";
 import NotFound from "@/app/not-found";
 
-import { serialize } from "next-mdx-remote/serialize";
+// Generate static params for all blog posts
+export async function generateStaticParams() {
+  const contentDir = path.join(process.cwd(), "src", "content");
+  try {
+    const files = fs.readdirSync(contentDir).filter((f) => f.endsWith(".mdx"));
+    return files.map((filename) => ({
+      slug: filename.replace(/\.mdx$/, ""),
+    }));
+  } catch (err) {
+    return [];
+  }
+}
 
 interface BlogPostProps {
   params: Promise<{ slug: string }>;
@@ -20,7 +31,7 @@ async function getPostBySlug(slug: string) {
   if (!fs.existsSync(filePath)) return null;
   const source = fs.readFileSync(filePath, "utf-8");
   const { data, content } = matter(source);
-  const mdxSource = await serialize(content, { scope: data });
+  
   return {
     title: data.title || slug,
     description: data.description || "",
@@ -28,7 +39,6 @@ async function getPostBySlug(slug: string) {
     avatar: data.avatar || "/placeholder.svg",
     readTime: data.readTime || "",
     date: data.date || "",
-    mdxSource,
     content,
   };
 }
@@ -40,6 +50,8 @@ const BlogPost = async ({ params }: BlogPostProps) => {
   if (!post) {
     return <NotFound />;
   }
+
+
 
   return (
     <div className="min-h-screen bg-black">
@@ -61,7 +73,7 @@ const BlogPost = async ({ params }: BlogPostProps) => {
 
           <div className="flex items-center gap-3 mb-12 pb-8 border-b border-gray-800">
               <Image
-                src={post.avatar && post.avatar.startsWith('/') ? post.avatar : '/placeholder.svg'}
+                src={post.avatar || '/placeholder.svg'}
                 alt={post.author}
                 width={40}
                 height={40}
@@ -75,9 +87,9 @@ const BlogPost = async ({ params }: BlogPostProps) => {
             </div>
           </div>
 
-          <div className="prose prose-invert prose-lg max-w-none">
-            <BlogMdxContent source={post.mdxSource} />
-          </div>
+            <div className="prose prose-invert prose-lg max-w-none">
+              <SimpleMdxRenderer content={post.content} />
+            </div>
         </div>
       </main>
     </div>
