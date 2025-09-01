@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import SimpleMdxRenderer from "../../../components/SimpleMdxRenderer";
+import SimpleMdxRenderer from "@/components/SimpleMdxRenderer";
 import fs from "fs";
 import { ArrowLeft } from "lucide-react";
 import path from "path";
