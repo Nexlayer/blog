@@ -7,7 +7,7 @@ export const StaticNavigation = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-14 sm:h-16">
           <div className="flex items-center space-x-2">
-            <a href="/blog" className="flex items-center">
+            <a href="https://nexlayer.com" className="flex items-center">
               <NexlayerLogo className="h-6 sm:h-7 w-auto" />
             </a>
             <span className="bg-teal-900/50 text-cyan-400 text-xs font-medium px-2 py-1 rounded border border-cyan-400/30">
