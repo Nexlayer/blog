@@ -9,7 +9,7 @@ export const Footer = () => {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
           {/* Left side - Logo and Social Links */}
           <div className="lg:col-span-2">
-            <Link href="/">
+            <Link href="https://nexlayer.com">
               <div className="mb-6">
                 <NexlayerLogo className="h-8 w-auto" />
               </div>
