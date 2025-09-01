@@ -59,7 +59,7 @@ export default function BlogPage() {
             <h2 className="text-2xl font-bold text-white mb-8">Featured</h2>
             <div className="grid md:grid-cols-2 gap-6">
               {featuredPosts.map((post) => (
-                <Link key={post.slug} href={`/blog/${post.slug}`}>
+                <Link key={post.slug} href={`/${post.slug}`}>
                   <article className="bg-black border border-gray-800 rounded-xl p-6 hover:bg-gray-800 transition-colors cursor-pointer h-full flex flex-col">
                     <h3 className="text-xl font-semibold text-white mb-3">
                       {post.title}
@@ -70,7 +70,7 @@ export default function BlogPage() {
 
                     <div className="flex items-center gap-3 mt-auto">
                       <Image
-                          src={post.avatar}
+                          src={post.avatar || '/placeholder.svg'}
                           alt={post.author}
                           width={32}
                           height={32}
@@ -95,7 +95,7 @@ export default function BlogPage() {
             <h2 className="text-2xl font-bold text-white mb-8">All posts</h2>
             <div className="grid md:grid-cols-3 gap-6">
               {allPosts.map((post) => (
-                <Link key={post.slug} href={`/blog/${post.slug}`}>
+                <Link key={post.slug} href={`/${post.slug}`}>
                   <article className="bg-black border border-gray-800 rounded-xl p-6 hover:bg-gray-800 transition-colors cursor-pointer h-full flex flex-col">
                     <h3 className="text-lg font-semibold text-white mb-3">
                       {post.title}
@@ -106,7 +106,7 @@ export default function BlogPage() {
 
                     <div className="flex items-center gap-3 mt-auto">
                       <Image
-                          src={post.avatar}
+                          src={post.avatar || '/placeholder.svg'}
                           alt={post.author}
                           width={32}
                           height={32}
