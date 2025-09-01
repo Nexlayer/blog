@@ -4,7 +4,10 @@ const nextConfig: NextConfig = {
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
   output: 'export', // Enable static export
   distDir: 'build', // Output directory
-  basePath: '/blog'
+  basePath: '/blog',
+  images: {
+    unoptimized: true
+  }
 }
 const withMDX = createMDX({
   extension: /\.mdx?$/,
