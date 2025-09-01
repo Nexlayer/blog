@@ -10,6 +10,19 @@ import NotFound from "@/app/not-found";
 
 import { serialize } from "next-mdx-remote/serialize";
 
+// Generate static params for all blog posts
+export async function generateStaticParams() {
+  const contentDir = path.join(process.cwd(), "src", "content");
+  try {
+    const files = fs.readdirSync(contentDir).filter((f) => f.endsWith(".mdx"));
+    return files.map((filename) => ({
+      slug: filename.replace(/\.mdx$/, ""),
+    }));
+  } catch (err) {
+    return [];
+  }
+}
+
 interface BlogPostProps {
   params: Promise<{ slug: string }>;
 }
