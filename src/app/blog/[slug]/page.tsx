@@ -1,14 +1,12 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import BlogMdxContent from "../../../components/BlogMdxContent";
+import SimpleMdxRenderer from "../../../components/SimpleMdxRenderer";
 import fs from "fs";
 import { ArrowLeft } from "lucide-react";
 import path from "path";
 import matter from "gray-matter";
 import NotFound from "@/app/not-found";
-
-import { serialize } from "next-mdx-remote/serialize";
 
 // Generate static params for all blog posts
 export async function generateStaticParams() {
@@ -34,27 +32,15 @@ async function getPostBySlug(slug: string) {
   const source = fs.readFileSync(filePath, "utf-8");
   const { data, content } = matter(source);
   
-  try {
-    const mdxSource = await serialize(content, { 
-      scope: data,
-      mdxOptions: {
-        development: process.env.NODE_ENV === 'development'
-      }
-    });
-    return {
-      title: data.title || slug,
-      description: data.description || "",
-      author: data.author || "Unknown",
-      avatar: data.avatar || "/placeholder.svg",
-      readTime: data.readTime || "",
-      date: data.date || "",
-      mdxSource,
-      content,
-    };
-  } catch (error) {
-    console.error('Error serializing MDX:', error);
-    return null;
-  }
+  return {
+    title: data.title || slug,
+    description: data.description || "",
+    author: data.author || "Unknown",
+    avatar: data.avatar || "/placeholder.svg",
+    readTime: data.readTime || "",
+    date: data.date || "",
+    content,
+  };
 }
 
 const BlogPost = async ({ params }: BlogPostProps) => {
@@ -65,12 +51,7 @@ const BlogPost = async ({ params }: BlogPostProps) => {
     return <NotFound />;
   }
 
-  // Debug logging
-  console.log('Post data:', {
-    title: post.title,
-    avatar: post.avatar,
-    author: post.author
-  });
+
 
   return (
     <div className="min-h-screen bg-black">
@@ -107,11 +88,7 @@ const BlogPost = async ({ params }: BlogPostProps) => {
           </div>
 
             <div className="prose prose-invert prose-lg max-w-none">
-              {post.mdxSource ? (
-                <BlogMdxContent source={post.mdxSource} />
-              ) : (
-                <div className="text-red-400">Error loading content</div>
-              )}
+              <SimpleMdxRenderer content={post.content} />
             </div>
         </div>
       </main>
