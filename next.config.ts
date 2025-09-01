@@ -2,16 +2,12 @@ import { NextConfig } from 'next'
 import createMDX from '@next/mdx'
 const nextConfig: NextConfig = {
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
-  output: 'standalone',
-  async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/blog',
-        permanent: true,
-      },
-    ]
-  },
+  output: 'export', // Enable static export
+  distDir: 'build', // Output directory
+  basePath: '/blog',
+  images: {
+    unoptimized: true
+  }
 }
 const withMDX = createMDX({
   extension: /\.mdx?$/,
