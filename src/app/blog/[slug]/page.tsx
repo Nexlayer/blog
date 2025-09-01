@@ -2,7 +2,6 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import BlogMdxContent from "../../../components/BlogMdxContent";
-import BlogContentClient from "../../../components/BlogContentClient";
 import fs from "fs";
 import { ArrowLeft } from "lucide-react";
 import path from "path";
@@ -21,17 +20,28 @@ async function getPostBySlug(slug: string) {
   if (!fs.existsSync(filePath)) return null;
   const source = fs.readFileSync(filePath, "utf-8");
   const { data, content } = matter(source);
-  const mdxSource = await serialize(content, { scope: data });
-  return {
-    title: data.title || slug,
-    description: data.description || "",
-    author: data.author || "Unknown",
-    avatar: data.avatar || "/placeholder.svg",
-    readTime: data.readTime || "",
-    date: data.date || "",
-    mdxSource,
-    content,
-  };
+  
+  try {
+    const mdxSource = await serialize(content, { 
+      scope: data,
+      mdxOptions: {
+        development: process.env.NODE_ENV === 'development'
+      }
+    });
+    return {
+      title: data.title || slug,
+      description: data.description || "",
+      author: data.author || "Unknown",
+      avatar: data.avatar || "/placeholder.svg",
+      readTime: data.readTime || "",
+      date: data.date || "",
+      mdxSource,
+      content,
+    };
+  } catch (error) {
+    console.error('Error serializing MDX:', error);
+    return null;
+  }
 }
 
 const BlogPost = async ({ params }: BlogPostProps) => {
@@ -41,6 +51,13 @@ const BlogPost = async ({ params }: BlogPostProps) => {
   if (!post) {
     return <NotFound />;
   }
+
+  // Debug logging
+  console.log('Post data:', {
+    title: post.title,
+    avatar: post.avatar,
+    author: post.author
+  });
 
   return (
     <div className="min-h-screen bg-black">
@@ -62,7 +79,7 @@ const BlogPost = async ({ params }: BlogPostProps) => {
 
           <div className="flex items-center gap-3 mb-12 pb-8 border-b border-gray-800">
               <Image
-                src={post.avatar && post.avatar.startsWith('/') ? post.avatar : '/placeholder.svg'}
+                src={post.avatar || '/placeholder.svg'}
                 alt={post.author}
                 width={40}
                 height={40}
@@ -77,7 +94,11 @@ const BlogPost = async ({ params }: BlogPostProps) => {
           </div>
 
             <div className="prose prose-invert prose-lg max-w-none">
-              <BlogContentClient Content={() => <BlogMdxContent source={post.mdxSource} />} />
+              {post.mdxSource ? (
+                <BlogMdxContent source={post.mdxSource} />
+              ) : (
+                <div className="text-red-400">Error loading content</div>
+              )}
             </div>
         </div>
       </main>
