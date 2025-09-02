@@ -17,7 +17,7 @@ function getAllPosts() {
       title: data.title || filename.replace(/\.mdx$/, ""),
       description: data.description || "",
       author: data.author || "Unknown",
-      avatar: data.avatar || "/placeholder.svg",
+      coverImage: data.coverImage || "",
       readTime: data.readTime || "",
       slug: filename.replace(/\.mdx$/, ""),
       date: data.date || null,
