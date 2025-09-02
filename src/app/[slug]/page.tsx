@@ -36,7 +36,7 @@ async function getPostBySlug(slug: string) {
     title: data.title || slug,
     description: data.description || "",
     author: data.author || "Unknown",
-    avatar: data.avatar || "/placeholder.svg",
+    coverImage: data.coverImage || "",
     readTime: data.readTime || "",
     date: data.date || "",
     content,
@@ -71,14 +71,26 @@ const BlogPost = async ({ params }: BlogPostProps) => {
 
           <p className="text-xl text-gray-400 mb-8">{post.description}</p>
 
+          {post.coverImage && (
+            <div className="mb-8">
+              <Image
+                src={post.coverImage}
+                alt={post.title}
+                width={800}
+                height={400}
+                className="w-full h-auto rounded-lg"
+                priority
+              />
+            </div>
+          )}
+
           <div className="flex items-center gap-3 mb-12 pb-8 border-b border-gray-800">
               <Image
-                src={post.avatar || '/placeholder.svg'}
-                alt={post.author}
+                src="/blog/logo-icon.svg"
+                alt="Nexlayer"
                 width={40}
                 height={40}
                 className="rounded-full"
-                style={{ objectFit: 'cover' }}
                 priority
               />
             <div className="flex flex-col">
@@ -87,7 +99,7 @@ const BlogPost = async ({ params }: BlogPostProps) => {
             </div>
           </div>
 
-            <div className="prose prose-invert prose-lg max-w-none">
+            <div className="prose prose-invert prose-lg max-w-none prose-headings:text-white prose-p:text-gray-300 prose-strong:text-white prose-code:text-green-400 prose-pre:bg-gray-900 prose-pre:border prose-pre:border-gray-800">
               <SimpleMdxRenderer content={post.content} />
             </div>
         </div>
