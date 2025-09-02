@@ -22,8 +22,7 @@ export const StaticNavigation = () => {
               rel="noopener noreferrer"
               className="bg-white !text-black hover:bg-transparent hover:border-cyan-400 hover:border-2 border-2 hover:!text-cyan-400 text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 font-medium rounded-lg transition-all duration-300"
             >
-              <span className="hidden sm:inline">Join the Beta</span>
-              <span className="sm:hidden">Beta</span>
+              <span>Join the Beta</span>
             </a>
           </div>
         </div>
