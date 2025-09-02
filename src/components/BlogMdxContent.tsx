@@ -5,10 +5,11 @@ import MdxRenderer from "./MdxRenderer";
 
 interface BlogMdxContentProps {
   source: MDXRemoteSerializeResult<Record<string, unknown>>;
+  scope?: Record<string, any>;
 }
 
-const BlogMdxContent: React.FC<BlogMdxContentProps> = ({ source }) => {
-  return <MdxRenderer source={source} />;
+const BlogMdxContent: React.FC<BlogMdxContentProps> = ({ source, scope }) => {
+  return <MdxRenderer source={source} scope={scope} />;
 };
 
 export default BlogMdxContent;

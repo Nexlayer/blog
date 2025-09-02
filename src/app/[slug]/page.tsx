@@ -13,9 +13,8 @@ export async function generateStaticParams() {
   const contentDir = path.join(process.cwd(), "src", "content");
   try {
     const files = fs.readdirSync(contentDir).filter((f) => f.endsWith(".mdx"));
-    return files.map((filename) => ({
-      slug: filename.replace(/\.mdx$/, ""),
-    }));
+  // Return array of objects with slug for static export compatibility
+  return files.map((filename) => ({ slug: filename.replace(/\.mdx$/, "") }));
   } catch (err) {
     return [];
   }
@@ -37,6 +36,7 @@ async function getPostBySlug(slug: string) {
     description: data.description || "",
     author: data.author || "Unknown",
     avatar: data.avatar || "/placeholder.svg",
+    coverImage: data.coverImage || "",
     readTime: data.readTime || "",
     date: data.date || "",
     content,
@@ -68,17 +68,42 @@ export default async function BlogPost({ params }: BlogPostProps) {
               <ArrowLeft /> Back to Blog
             </span>
           </Link>
-          <h1 className="text-4xl font-bold text-white mb-4">{post.title}</h1>
-          <p className="text-gray-400 text-lg mb-8">{post.description}</p>
+          <p className="text-gray-500 text-sm mb-6">{post.date}</p>
+
+          <h1 className="text-4xl font-bold text-white mb-6">{post.title}</h1>
+
+          <p className="text-xl text-gray-400 mb-8">{post.description}</p>
+
+          {post.coverImage && (
+            <div className="mb-8">
+              <Image
+                src={post.coverImage}
+                alt={post.title}
+                width={800}
+                height={400}
+                className="w-full h-auto rounded-lg"
+                priority
+              />
+            </div>
+          )}
+
           <div className="flex items-center gap-3 mb-12 pb-8 border-b border-gray-800">
-            <Image src={post.avatar || '/placeholder.svg'} alt={post.author} width={40} height={40} className="rounded-full" style={{ objectFit: 'cover' }} priority />
+            {/* <Image src={post.avatar || '/placeholder.svg'} alt={post.author} width={40} height={40} className="rounded-full" style={{ objectFit: 'cover' }} priority /> */}
+              <Image
+                src="/blog/logo-icon.svg"
+                alt="Nexlayer"
+                width={40}
+                height={40}
+                className="rounded-full"
+                priority
+              />
             <div className="flex flex-col">
               <span className="text-gray-300">Posted By {post.author}</span>
               <span className="text-sm text-gray-500">{post.readTime}</span>
             </div>
           </div>
-          <div className="prose prose-invert prose-lg max-w-none">
-            <BlogMdxContent source={mdxSource} />
+          <div className="prose prose-invert prose-lg max-w-none prose-h2:text-2xl">
+            <BlogMdxContent source={mdxSource} scope={{ url: "{url}" }} />
           </div>
         </div>
       </main>

@@ -17,7 +17,7 @@ function getAllPosts() {
       title: data.title || filename.replace(/\.mdx$/, ""),
       description: data.description || "",
       author: data.author || "Unknown",
-      avatar: data.avatar || "/placeholder.svg",
+      coverImage: data.coverImage || "",
       readTime: data.readTime || "",
       slug: filename.replace(/\.mdx$/, ""),
       date: data.date || null,
@@ -60,6 +60,18 @@ export default function BlogPage() {
               {featuredPosts.map((post) => (
                 <Link key={post.slug} href={`/${post.slug}`}>
                   <article className="bg-black border border-gray-800 rounded-xl p-6 hover:bg-gray-800 transition-colors cursor-pointer h-full flex flex-col">
+                    {post.coverImage && (
+                      <div className="mb-4">
+                        <Image
+                          src={post.coverImage}
+                          alt={post.title}
+                          width={400}
+                          height={200}
+                          className="w-full h-48 object-cover rounded-lg"
+                          priority
+                        />
+                      </div>
+                    )}
                     <h3 className="text-xl font-semibold text-white mb-3">
                       {post.title}
                     </h3>
@@ -69,8 +81,8 @@ export default function BlogPage() {
 
                     <div className="flex items-center gap-3 mt-auto">
                       <Image
-                          src={post.avatar || '/placeholder.svg'}
-                          alt={post.author}
+                          src="/blog/logo-icon.svg"
+                          alt="Nexlayer"
                           width={32}
                           height={32}
                           className="w-8 h-8 rounded-full"
@@ -96,17 +108,29 @@ export default function BlogPage() {
               {allPosts.map((post) => (
                 <Link key={post.slug} href={`/${post.slug}`}>
                   <article className="bg-black border border-gray-800 rounded-xl p-6 hover:bg-gray-800 transition-colors cursor-pointer h-full flex flex-col">
+                    {post.coverImage && (
+                      <div className="mb-4">
+                        <Image
+                          src={post.coverImage}
+                          alt={post.title}
+                          width={400}
+                          height={200}
+                          className="w-full h-48 object-cover rounded-lg"
+                          priority
+                        />
+                      </div>
+                    )}
                     <h3 className="text-lg font-semibold text-white mb-3">
                       {post.title}
                     </h3>
                     <p className="text-gray-400 mb-6 text-sm leading-relaxed flex-grow">
                       {post.description}
-                    </p>
+                        </p>
 
                     <div className="flex items-center gap-3 mt-auto">
                       <Image
-                          src={post.avatar || '/placeholder.svg'}
-                          alt={post.author}
+                          src="/blog/logo-icon.svg"
+                          alt="Nexlayer"
                           width={32}
                           height={32}
                           className="w-8 h-8 rounded-full"

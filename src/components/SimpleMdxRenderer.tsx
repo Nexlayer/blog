@@ -15,6 +15,7 @@ const SimpleMdxRenderer: React.FC<SimpleMdxRendererProps> = ({ content }) => {
     const elements: React.ReactNode[] = [];
     let currentList: React.ReactNode[] = [];
     let inList = false;
+    let codeBlockCounter = 0;
     
     lines.forEach((line, index) => {
       const trimmedLine = line.trim();
@@ -103,7 +104,7 @@ const SimpleMdxRenderer: React.FC<SimpleMdxRendererProps> = ({ content }) => {
         
         const codeContent = codeLines.join('\n');
         elements.push(
-          <BlogCodeBlock key={`code-${index}`} language={language}>
+          <BlogCodeBlock key={`code-${codeBlockCounter++}`} language={language}>
             {codeContent}
           </BlogCodeBlock>
         );
