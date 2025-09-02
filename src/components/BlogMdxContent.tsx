@@ -1,6 +1,7 @@
+"use client";
 import React from "react";
-import MdxRenderer from "./MdxRenderer";
 import type { MDXRemoteSerializeResult } from "next-mdx-remote";
+import MdxRenderer from "./MdxRenderer";
 
 interface BlogMdxContentProps {
   source: MDXRemoteSerializeResult<Record<string, unknown>>;
