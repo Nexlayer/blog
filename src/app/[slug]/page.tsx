@@ -1,7 +1,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import BlogMdxContent from "@/components/BlogMdxContent";
+import ClientMdxRenderer from "@/components/ClientMdxRenderer";
 import fs from "fs";
 import { ArrowLeft } from "lucide-react";
 import path from "path";
@@ -50,7 +50,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
     return <NotFound />;
   }
   const { serialize } = await import('next-mdx-remote/serialize');
-  let mdxSource = null;
+  let mdxSource = null as any;
   try {
     mdxSource = await serialize(post.content || "");
   } catch (err) {
@@ -103,7 +103,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
             </div>
           </div>
           <div className="prose prose-invert prose-lg max-w-none prose-h2:text-2xl">
-            <BlogMdxContent source={mdxSource} scope={{ url: "{url}" }} />
+            <ClientMdxRenderer source={mdxSource} scope={{ url: "{url}" }} />
           </div>
         </div>
       </main>
