@@ -1,7 +1,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import ClientMdxRenderer from "@/components/ClientMdxRenderer";
+import ClientMdxRenderer from "../../../components/ClientMdxRenderer";
 import fs from "fs";
 import { ArrowLeft } from "lucide-react";
 import path from "path";
@@ -63,7 +63,7 @@ export default async function BlogPost({ params }: BlogPostProps) {
     <div className="min-h-screen bg-black">
       <main className="pt-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <Link href="/" className="mb-8 inline-block text-blue-400 hover:underline">
+          <Link href="/blog" className="mb-8 inline-block text-blue-400 hover:underline">
             <span className="flex items-center gap-2">
               <ArrowLeft /> Back to Blog
             </span>
