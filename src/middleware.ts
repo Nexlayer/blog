@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-// Middleware to rewrite incoming requests under /blog/:slug to the internal
-// route /:slug so statically exported files (or dynamic route handlers)
-// that exist at the root slug path are served while keeping basePath = '/blog'.
+// Middleware to handle static assets and API routes under /blog basePath
+// No path rewriting needed since basePath is already set to '/blog'
 
 const PUBLIC_ASSET = /^\/blog\/(?:_next|static|favicon|apple-touch-icon|favicon-16x16|favicon-32x32|site.webmanifest|blog-post-images)\//i
 
@@ -16,12 +15,8 @@ export function middleware(req: NextRequest) {
     return NextResponse.next()
   }
 
-  if (pathname === '/blog' || pathname === '/blog/') return NextResponse.next()
-
-  const newPath = pathname.replace(/^\/blog/, '') || '/'
-  const url = req.nextUrl.clone()
-  url.pathname = newPath
-  return NextResponse.rewrite(url)
+  // For all other /blog/* routes, let Next.js handle them normally
+  return NextResponse.next()
 }
 
 export const config = {
