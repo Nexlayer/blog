@@ -1,7 +1,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import ClientMdxRenderer from "../../../components/ClientMdxRenderer";
+import ClientMdxRenderer from "@/components/ClientMdxRenderer";
 import fs from "fs";
 import { ArrowLeft } from "lucide-react";
 import path from "path";
