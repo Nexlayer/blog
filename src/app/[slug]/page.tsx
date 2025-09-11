@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import Link from "next/link";
 import ClientMdxRenderer from "@/components/ClientMdxRenderer";
@@ -7,6 +6,8 @@ import { ArrowLeft } from "lucide-react";
 import path from "path";
 import matter from "gray-matter";
 import NotFound from "@/app/not-found";
+import Head from "next/head";
+import { Metadata } from "next";
 
 // Generate static params for all blog posts
 export async function generateStaticParams() {
@@ -42,6 +43,37 @@ async function getPostBySlug(slug: string) {
     content,
   };
 }
+
+export const generateMetadata = async ({ params }: BlogPostProps): Promise<Metadata> => {
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
+  if (!post) {
+    return {
+      title: "Not Found",
+      description: "The requested blog post could not be found.",
+      openGraph: {
+        title: "Not Found",
+        description: "The requested blog post could not be found.",
+        images: [],
+      },
+    };
+  }
+  return {
+    title: post.title,
+    description: post.description,
+    openGraph: {
+      title: post.title,
+      description: post.description,
+      images: [
+        {
+          url: post.coverImage,
+          alt: post.title,
+        },
+      ],
+      type: "article",
+    },
+  };
+};
 
 export default async function BlogPost({ params }: BlogPostProps) {
   const { slug } = await params;
@@ -88,15 +120,14 @@ export default async function BlogPost({ params }: BlogPostProps) {
           )}
 
           <div className="flex items-center gap-3 mb-12 pb-8 border-b border-gray-800">
-            {/* <Image src={post.avatar || '/placeholder.svg'} alt={post.author} width={40} height={40} className="rounded-full" style={{ objectFit: 'cover' }} priority /> */}
-              <Image
-                src="/blog/logo-icon.svg"
-                alt="Nexlayer"
-                width={40}
-                height={40}
-                className="rounded-full"
-                priority
-              />
+            <Image
+              src="/blog/logo-icon.svg"
+              alt="Nexlayer"
+              width={40}
+              height={40}
+              className="rounded-full"
+              priority
+            />
             <div className="flex flex-col">
               <span className="text-gray-300">Posted By {post.author}</span>
               <span className="text-sm text-gray-500">{post.readTime}</span>
