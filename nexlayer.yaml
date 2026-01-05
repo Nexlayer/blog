@@ -2,7 +2,7 @@ application:
   name: nexlayer-website
   pods:
     - name: blog
-      image: ghcr.io/nexlayer/nexlayer-blog:latest
+      image: registry.nexlayer.io/nexlayer-mcp/83625f08-a865-4ae2-8edc-e5d1d078d551/blog-7f9c2a8c-blog-7f9c2a8c:9bad6439-1767637615
       path: "/"
       servicePorts: [80]
       vars:
