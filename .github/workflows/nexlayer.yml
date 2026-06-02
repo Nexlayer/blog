@@ -1,0 +1,110 @@
+name: Nexlayer CI/CD
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  nexlayer-deploy:
+    # Skip if this is a PR from the nexlayer config branch itself.
+    if: github.head_ref != 'nexlayer'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - name: Deploy to Nexlayer
+        id: deploy
+        env:
+          NEXLAYER_API_KEY: ${{ secrets.NEXLAYER_API_KEY }}
+        run: |
+          set -e
+          BRANCH="${{ github.head_ref || github.ref_name }}"
+
+          # Kick off the pipeline — returns in ~200ms with a pipeline_id
+          RESP=$(curl -sf -X POST "https://agent.nexlayer.com/v1/pipeline/async" \
+            -H "Authorization: Bearer $NEXLAYER_API_KEY" \
+            -H "X-GitHub-Token: ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"repo_url\":\"${{ github.server_url }}/${{ github.repository }}\",\"branch\":\"$BRANCH\"}")
+          PIPELINE_ID=$(echo "$RESP" | jq -r '.pipeline_id')
+          echo "pipeline_id=$PIPELINE_ID" >> "$GITHUB_OUTPUT"
+          echo "Pipeline started: $PIPELINE_ID"
+
+          # Poll every 15s until done or error (max 15 min = 60 attempts)
+          DEPLOY_URL=""
+          for i in $(seq 1 60); do
+            ST=$(curl -sf "https://agent.nexlayer.com/v1/pipeline/$PIPELINE_ID" \
+              -H "Authorization: Bearer $NEXLAYER_API_KEY" \
+              || echo '{"phase":"unknown"}')
+            PHASE=$(echo "$ST" | jq -r '.phase')
+            LABEL=$(echo "$ST" | jq -r '.label // ""')
+            PCT=$(echo "$ST"  | jq -r '.pct // 0')
+            echo "[$i/60] $PHASE — $LABEL ($PCT%)"
+            case "$PHASE" in
+              done)
+                DEPLOY_URL=$(echo "$ST" | jq -r '.deploy_url // ""')
+                break ;;
+              error|fix_exhausted)
+                ERR=$(echo "$ST" | jq -r '.error_summary // "deploy failed"')
+                echo "::error::$ERR"
+                exit 1 ;;
+            esac
+            sleep 15
+          done
+
+          [ -z "$DEPLOY_URL" ] && { echo "::error::Pipeline timed out after 15 min"; exit 1; }
+
+          # Capture final status fields for the PR comment
+          FINAL_ST=$(curl -sf "https://agent.nexlayer.com/v1/pipeline/$PIPELINE_ID" \
+            -H "Authorization: Bearer $NEXLAYER_API_KEY" \
+            || echo '{}')
+          RUNTIME=$(echo "$FINAL_ST"     | jq -r '.runtime // ""')
+          FIX_ATTEMPTS=$(echo "$FINAL_ST" | jq -r '.fix_attempts // 0')
+          PR_URL=$(echo "$FINAL_ST"      | jq -r '.pr_url // ""')
+
+          echo "url=$DEPLOY_URL"       >> "$GITHUB_OUTPUT"
+          echo "runtime=$RUNTIME"      >> "$GITHUB_OUTPUT"
+          echo "fix_attempts=$FIX_ATTEMPTS" >> "$GITHUB_OUTPUT"
+          echo "pr_url=$PR_URL"        >> "$GITHUB_OUTPUT"
+
+          {
+            echo "## Deployed to Nexlayer"
+            echo ""
+            echo "**URL:** [$DEPLOY_URL]($DEPLOY_URL)"
+            [ -n "$RUNTIME" ] && echo "**Runtime:** $RUNTIME"
+            [ "$FIX_ATTEMPTS" -gt 0 ] && echo "**Auto-fixes applied:** $FIX_ATTEMPTS"
+            [ -n "$PR_URL" ] && echo "**Config PR:** $PR_URL"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comment preview URL on PR
+        if: github.event_name == 'pull_request' && steps.deploy.outputs.url != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const url         = '${{ steps.deploy.outputs.url }}';
+            const runtime     = '${{ steps.deploy.outputs.runtime }}';
+            const fixAttempts = parseInt('${{ steps.deploy.outputs.fix_attempts }}' || '0', 10);
+            const prUrl       = '${{ steps.deploy.outputs.pr_url }}';
+            const sha         = context.sha.slice(0, 7);
+
+            const lines = [
+              '## Preview deployed on Nexlayer',
+              '',
+              '**URL:** [' + url + '](' + url + ')',
+              '**Commit:** ' + sha,
+            ];
+            if (runtime)     lines.push('**Runtime:** ' + runtime);
+            if (fixAttempts) lines.push('**Auto-fixes applied:** ' + fixAttempts);
+            if (prUrl)       lines.push('**Nexlayer config PR:** ' + prUrl);
+            lines.push('');
+            lines.push('_This preview is live until the PR is closed. Merging to **main** will update your production deployment._');
+
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: lines.join('\n'),
+            });
