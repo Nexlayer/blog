@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <div className="pb-20 pt-32 flex items-center justify-center min-h-screen bg-[#0a0a0a] text-white">
+    <div className="pb-20 pt-32 flex items-center justify-center min-h-screen bg-[#2a2a2a] text-white">
       <div className="flex flex-col items-center">
         <Image className="size-[200px] sm:size-[250px]" src={Notfound} alt="Not Found" />
         <div
