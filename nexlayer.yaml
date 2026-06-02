@@ -1,0 +1,15 @@
+application:
+  name: neat-crane-nexlayer-blog
+  pods:
+    - name: app
+      image: "# filled by pipeline"
+      path: /
+      servicePorts:
+        - 80
+      vars:
+        - key: NODE_ENV
+          value: production
+        - key: PORT
+          value: "80"
+        - key: HOSTNAME
+          value: 0.0.0.0
